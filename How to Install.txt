@@ -1,7 +1,7 @@
 sudo mkdir /shared
 sudo chmod a+w /shared
 
-DROP 
+ 
 >>> Java
 sudo apt-get install openjdk-8-jre
 
