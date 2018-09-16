@@ -34,21 +34,12 @@ docker run --name scylla -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 
 docker run -it --link cassy:cassandra --rm cassandra cqlsh cassandra
 docker run -it --link cassy1:cassandra --rm cassandra cqlsh cassandra
 
->>> Kafka
-see -> confluent
-
->>> Zipkin
-docker run --name zipkin -d -p 9411:9411 -p 9410:9410 openzipkin/zipkin
 
 >>> kamon/grafana_graphite
 apt-get install libhyperic-sigar-java
 https://hub.docker.com/r/kamon/grafana_graphite/
 http://whiteprompt.com/scala/monitoring-reactive-applications-jvm/
 docker run --name graphite -d -p 3000:3000 -p 81:81 -p 8125:8125/udp -p 8126:8126 -p 2003:2003 kamon/grafana_graphite
-
-
->>> Kube
-https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
 
 
 >>> Cassandra Secondary Index
