@@ -1,0 +1,93 @@
+sudo mkdir /shared
+sudo chmod a+w /shared
+
+DROP 
+>>> Java
+sudo apt-get install openjdk-8-jre
+
+>>> SBT
+echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+sudo apt-get update
+sudo apt-get install sbt
+> Check SBT
+sbt about
+
+
+>>> Scala
+cd /shared
+mkdir debs
+cd debs/
+wget www.scala-lang.org/files/archive/scala-2.12.1.deb
+sudo dpkg -i scala-2.12.1.deb
+sudo apt-get update
+sudo apt-get install scala
+scala -version
+
+
+>>> Cassandra
+docker run --name cassy -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 -v /shared/valumes/cassandra:/var/lib/cassandra -d cassandra:latest
+docker run --name cassy1 -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 -v /shared/valumes/cassandra:/var/lib/cassandra -d cassandra:3.11.0
+docker run --name scylla -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 -d scylladb/scylla
+
+> Check CQLSH is up
+docker run -it --link cassy:cassandra --rm cassandra cqlsh cassandra
+docker run -it --link cassy1:cassandra --rm cassandra cqlsh cassandra
+
+>>> Kafka
+see -> confluent
+
+>>> Zipkin
+docker run --name zipkin -d -p 9411:9411 -p 9410:9410 openzipkin/zipkin
+
+>>> kamon/grafana_graphite
+apt-get install libhyperic-sigar-java
+https://hub.docker.com/r/kamon/grafana_graphite/
+http://whiteprompt.com/scala/monitoring-reactive-applications-jvm/
+docker run --name graphite -d -p 3000:3000 -p 81:81 -p 8125:8125/udp -p 8126:8126 -p 2003:2003 kamon/grafana_graphite
+
+
+>>> Kube
+https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
+
+
+>>> Cassandra Secondary Index
+https://github.com/Stratio/cassandra-lucene-index
+https://github.com/Stratio/cassandra-lucene-index/blob/branch-3.11.0/doc/documentation.rst
+https://github.com/Stratio/cassandra-lucene-index/tree/3.11.0.0
+
+> Clone the project: git clone http://github.com/Stratio/cassandra-lucene-index
+> Change to the downloaded directory: cd cassandra-lucene-index
+> Checkout a plugin version suitable for your Apache Cassandra version: git checkout A.B.C.X
+> Build the plugin with Maven: mvn clean package
+> Copy the generated JAR to the lib folder of your compatible Cassandra installation: cp plugin/target/cassandra-lucene-index-plugin-*.jar <CASSANDRA_HOME>/lib/
+> Start/restart Cassandra as usual.
+
+
+
+docker run --name cassy1 -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 -v /shared/valumes/cassandra:/var/lib/cassandra -d cassandra:3.11.0
+apt install openjdk-8-jdk
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
+cd /shared/src/
+git clone http://github.com/Stratio/cassandra-lucene-index
+cd cassandra-lucene-index
+git checkout 3.11.0.0
+mvn clean package -e
+docker cp plugin/target/cassandra-lucene-index-plugin-3.11.0.0.jar cassy1:/usr/share/cassandra/lib/cassandra-lucene-index-plugin-3.11.0.0.jar
+> check it’s ok:
+> docker exec -i -t cassy1 /bin/bash
+> cd /usr/share/cassandra/lib/
+> ls -lah
+> and can see cassandra-lucene-index-plugin-3.11.0.0.jar
+docker stop cassy1
+docker commit cassy1 cassandra:3.11.0.v1
+docker rm cassy1
+docker run --name cassy1 -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 -v /shared/valumes/cassandra:/var/lib/cassandra -d cassandra:3.11.0.v1
+> check it’s ok:
+> docker exec -i -t cassy1 /bin/bash
+> cd /usr/share/cassandra/lib/
+> ls -lah
+> and can see cassandra-lucene-index-plugin-3.11.0.0.jar
+docker run -it --link cassy1:cassandra --rm cassandra:3.11.0.v1 cqlsh cassandra
+

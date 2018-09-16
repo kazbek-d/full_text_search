@@ -1,0 +1,8 @@
+FROM java:alpine
+ADD backend-workers-assembly-1.0.jar ~/backend-workers-assembly-1.0.jar
+ENV WORKER_PORT 0
+ENV CASSANDRA_ADDRESS 172.17.0.3
+ENV CASSANDRA_KEYSPACE file_io
+ENV SPARK_APP_NAME FileIO
+ENV SPARK_MASTER local
+ENTRYPOINT ["java","-jar","~/backend-workers-assembly-1.0.jar"]

@@ -1,0 +1,7 @@
+FROM java:alpine
+ADD backend-rest-api-assembly-1.0.jar ~/backend-rest-api-assembly-1.0.jar
+ENV WEBSERVER_ADDRESS 0.0.0.0
+ENV WEBSERVER_PORT 8112
+ENV FILESYSTEM_PATH /home
+VOLUME /home
+ENTRYPOINT ["java","-jar","~/backend-rest-api-assembly-1.0.jar"]
