@@ -1,7 +1,1 @@
-Research:
-1. Akka
-2. Akka.Http
-3. Akka.Cluster
-4. GraphQL (https://sangria-graphql.org)
-5. Cassandra
-6. Cassandra Lucene index (full text search)
+To learn more about this project, read [the wiki](https://gitlab.com/kazbek/full_text_search/wikis/home).
